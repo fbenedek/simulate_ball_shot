@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 PKG = 'publish_npy_stream'
-import roslib; roslib.load_manifest(PKG)
+import roslib #; roslib.load_manifest(PKG)
 
 import rospy
 from std_msgs.msg import Float32MultiArray

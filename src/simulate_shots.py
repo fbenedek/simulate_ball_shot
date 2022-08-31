@@ -6,7 +6,7 @@ Simulates ballistic projectile shooting at the robot.
 
 PKG = 'publish_npy_stream'
 ROBOT_FRAME = 'robot'
-import roslib; roslib.load_manifest(PKG)
+import roslib #; roslib.load_manifest(PKG)
 from visualization_msgs.msg import MarkerArray
 from geometry_msgs.msg import PointStamped, Vector3Stamped
 
@@ -100,3 +100,5 @@ if __name__ == '__main__':
     ball_state_viz = ball_state_visualizer()
     ball_state_viz.run()
 
+
+# rostopic pub /sim_capture/fire_ball_at_robot std_msgs/Float32MultiArray "data: [0.3, 10.1]"

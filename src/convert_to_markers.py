@@ -6,7 +6,7 @@ Simulates ballistic projectile shooting at the robot.
 
 PKG = 'publish_npy_stream'
 ROBOT_FRAME = 'robot'
-import roslib; roslib.load_manifest(PKG)
+import roslib #; roslib.load_manifest(PKG)
 from visualization_msgs.msg import Marker
 from geometry_msgs.msg import PointStamped
 
