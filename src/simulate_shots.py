@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 '''
 Simulates ballistic projectile shooting at the robot.
@@ -16,9 +16,8 @@ import numpy as np
 import tf
 
 class ball_state_visualizer():
-    def __init__(self) -> None:
+    def __init__(self):
         rospy.init_node('ball_simulator')
-        
         self.sub = rospy.Subscriber("sim_capture/fire_ball_at_robot", Float32MultiArray, self.fire_ball)
         self.tf_listener = tf.TransformListener()
         self.pub = rospy.Publisher('sim_capture/ball_states', Float32MultiArray, queue_size=1)
@@ -27,7 +26,7 @@ class ball_state_visualizer():
         self.intersection_pt = np.array([0,0,0.98])
         self.ball_acceleration = np.array([0,0,-9.81])
         self.initial_ball_pos = np.array([4.0,0,0.0])
-        self.rate = 50
+        self.rate = 100
         self.reset_stepts = 400
         self.steps_since_last_shot = 0
         self.ball_height = 1.1
@@ -47,9 +46,12 @@ class ball_state_visualizer():
             try:
                 self.tf_listener.waitForTransform("odom", "base", rospy.Time(0),rospy.Duration(4.0))
                 ball_pos_base, ball_speed_base = self.convert_ball_state()
-                msg.data = (*ball_pos_base.tolist(),
-                    *ball_speed_base.tolist(),
-                    *self.intersection_pt.tolist())
+                ball_pos_list = ball_pos_base.tolist()
+                ball_speed_list = ball_speed_base.tolist()
+                intersection_pt_list = self.intersection_pt.tolist()
+                msg.data = (ball_pos_list[0],ball_pos_list[1],ball_pos_list[2],
+                    ball_speed_list[0], ball_speed_list[1], ball_speed_list[2],
+                    intersection_pt_list[0], intersection_pt_list[1], intersection_pt_list[2])
                 self.pub.publish(msg)
             except:
                 pass
@@ -81,13 +83,13 @@ class ball_state_visualizer():
             print(trans)
             print(rot)
             displacement, speed = data.data
-            print(f"Firing ball to displacement {displacement} with speed {speed}")
+            print("Firing ball to displacement " + str(displacement) + " with speed " + str(speed))
             # set speed, initial position
             self.ball_speed[0] = - speed
             self.ball_speed[2] = self.initial_ball_pos[0]/speed * ( - self.ball_acceleration[2] * 0.5)
             self.ball_position = self.initial_ball_pos.copy()
             self.ball_position[1] += displacement
-            print(f"height and trans is {self.ball_height} trans {trans[2]}")
+            print("height and trans is " + str(self.ball_height) + " trans " + str(trans[2]))
             self.intersection_pt[1] = displacement
             # get the ball in the world CS
             self.ball_position += np.array(trans)
